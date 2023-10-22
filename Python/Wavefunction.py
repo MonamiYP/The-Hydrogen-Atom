@@ -22,16 +22,54 @@ def wavefunction(n, l, m, r, theta, phi):
     return psi
 
 def cartesian_to_spherical(x, y, z):
-    r = np.sqrt(x**2 + y**2 + x**2)
-    theta = np.arctan2(np.sqrt(x**2 + y**2), z)
+    r = np.sqrt(x**2 + y**2 + z**2)
+    theta = np.arccos(z/r)
     phi = np.arctan2(y, x)
     
     return r, theta, phi
 
-def plot_probability_density(n, l, m):
+def plot_probability_density_3d(n, l, m, radius=50):
 
-    max_radius = 50 # r/a_0
+    max_radius = radius # r/a_0
     resolution = 100
+    x = y = z = np.linspace(-max_radius, max_radius, resolution)
+
+    coords = []
+    probability = []
+
+    for ix in x:
+        for iy in y:
+            for iz in z:
+                coords.append(str((ix, iy, iz)))
+                r, theta, phi = cartesian_to_spherical(ix, iy, iz)
+                psi = wavefunction(n, l, m, r * BOHR_RADIUS, theta, phi)
+                probability.append(psi**2)
+    
+    probability = probability/sum(probability)
+    coord = np.random.choice(coords, size=10000, replace=True, p=probability)
+    coord_matrix = [i.split(',') for i in coord]
+    coord_matrix = np.matrix(coord_matrix)
+    x_coords = [float(i.item()[1:]) for i in coord_matrix[:,0]] 
+    y_coords = [float(i.item()) for i in coord_matrix[:,1]] 
+    z_coords = [float(i.item()[0:-1]) for i in coord_matrix[:,2]]
+
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+    ax.scatter(x_coords, y_coords, z_coords, alpha=0.05, s=2)
+    ax.set_title(f"Hydrogen probability density (n={n}, l={l}, m={m})")
+
+    ax.set_xticks([-radius,-radius/2, 0,radius/2,radius])
+    ax.set_yticks([-radius,-radius/2, 0,radius/2,radius])
+    ax.set_zticks([-radius,-radius/2, 0,radius/2,radius])
+
+    ax.axes.set_xlim3d(left=-radius+1, right=radius-1) 
+    ax.axes.set_ylim3d(bottom=-radius+1, top=radius-1) 
+    ax.axes.set_zlim3d(bottom=-radius+1, top=radius-1) 
+    plt.show()
+
+def plot_wavefunction_2d(n, l, m):
+    max_radius = 100 # r/a_0
+    resolution = 1000
     x = y = np.linspace(-max_radius, max_radius, resolution)
     x, y = np.meshgrid(x, y)
     r = np.sqrt((x**2 + y**2))
@@ -43,8 +81,9 @@ def plot_probability_density(n, l, m):
     
     fig = plt.figure()
     ax = fig.add_subplot(111)
-    ax.set_title('colorMap')
+    ax.set_title(f"Hydrogen probability density (n={n}, l={l}, m={m})")
     plt.imshow(np.sqrt(probability_density))
     plt.show()
 
-plot_probability_density(4, 3, 0)
+#plot_wavefunction_2d(4, 3, 2)
+plot_probability_density_3d(4, 3, 0, 40)
