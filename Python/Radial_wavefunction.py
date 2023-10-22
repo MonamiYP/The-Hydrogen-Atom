@@ -1,28 +1,19 @@
 import matplotlib.pyplot as plt
+import numpy as np
+import math
 from scipy import constants
 from scipy.special import eval_genlaguerre
-import math
-import numpy as np
 
-EPSILON_0 = constants.epsilon_0
-H_BAR = constants.hbar
-ELECTRON_CHARGE = constants.elementary_charge
-ELECTRON_MASS = constants.electron_mass
-
-BOHR_RADIUS = (4 * math.pi * EPSILON_0 * H_BAR**2) / (ELECTRON_CHARGE**2 * ELECTRON_MASS)
-
-def lageurre(n, k, x):
-    return eval_genlaguerre(n, k, x)
+BOHR_RADIUS = (4 * np.pi * constants.epsilon_0 * constants.hbar**2) / (constants.elementary_charge**2 * constants.electron_mass)
 
 def radial_equation(n, l, r):
-    root_term = math.sqrt( (2/(n*BOHR_RADIUS))**3 * math.factorial(n-l-1) / (2*n*((math.factorial(n+l))**3)))
-    exp_term = math.exp(-r/(n*BOHR_RADIUS))
-    l_power_term = (2*r/(n*BOHR_RADIUS))**l
-    lageurre_term = lageurre(n-l-1, 2*l+1, 2*r/(n*BOHR_RADIUS))
+    R = 2*r/(n*BOHR_RADIUS)
+    root_term = np.sqrt( (2/(n*BOHR_RADIUS))**3 * math.factorial(n-l-1) / (2*n*((math.factorial(n+l))))) # Cubed or not cubed? Different sources give different answers, check again later.
+    exp_term = np.exp(-R/2)
+    l_power_term = R**l
+    lageurre_term = eval_genlaguerre(n-l-1, 2*l+1, R)
 
-    R = root_term * exp_term * l_power_term * lageurre_term
-
-    return R
+    return root_term * exp_term * l_power_term * lageurre_term
 
 nl_vals = [(1,0), (2,0), (2,1), (3,0), (3,1), (3,2)]
 plt.figure()
@@ -48,7 +39,7 @@ for index, nl in enumerate(nl_vals):
     for i in range(len(x)):
         R[i] = radial_equation(nl[0], nl[1], x[i]*BOHR_RADIUS)
     ax = plt.subplot(3, 2, index+1)
-    ax.plot(x, 4*math.pi*x**2*R**2)
+    ax.plot(x, 4*np.pi*x**2*R**2)
 
     plt.title(f"Probability density L({nl[0]},{nl[1]})")
     plt.tight_layout()
