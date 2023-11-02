@@ -15,7 +15,7 @@ def angular_equation(l, m, theta, phi):
     m = np.abs(m)
     constant_term = (-1)**m * np.sqrt( (2*l+1)*sp.special.factorial(l-m) / (4*np.pi*sp.special.factorial(l+m)) )
     legrende = sp.special.lpmv(m, l, np.cos(theta))
-    return constant_term * np.real(np.exp(1.j * m * phi)) * legrende
+    return constant_term * np.abs(np.exp(1.j * m * phi)) * legrende # Returns magnitude, in the future expand to include phase
 
 def wavefunction(n, l, m, r, theta, phi):
     psi = radial_equation(n, l, r) * angular_equation(l, m, theta, phi)
@@ -86,4 +86,4 @@ def plot_wavefunction_2d(n, l, m):
     plt.show()
 
 #plot_wavefunction_2d(4, 3, 2)
-plot_probability_density_3d(4, 3, 0, 40)
+plot_probability_density_3d(5, 3, 0, 50)
