@@ -68,7 +68,7 @@ def plot_probability_density_3d(n, l, m, radius=50):
     plt.show()
 
 def plot_wavefunction_2d(n, l, m):
-    max_radius = 100 # r/a_0
+    max_radius = 40 # r/a_0
     resolution = 1000
     x = y = np.linspace(-max_radius, max_radius, resolution)
     x, y = np.meshgrid(x, y)
@@ -81,9 +81,9 @@ def plot_wavefunction_2d(n, l, m):
     
     fig = plt.figure()
     ax = fig.add_subplot(111)
-    ax.set_title(f"Hydrogen probability density (n={n}, l={l}, m={m})")
+    ax.set_title(f"(n={n}, l={l}, m={m})")
     plt.imshow(np.sqrt(probability_density))
     plt.show()
 
-#plot_wavefunction_2d(4, 3, 2)
-plot_probability_density_3d(5, 3, 0, 50)
+plot_wavefunction_2d(4, 1, 1)
+#plot_probability_density_3d(5, 3, 0, 50)

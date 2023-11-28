@@ -23,7 +23,7 @@ for index, nl in enumerate(nl_vals):
     for i in range(len(x)):
         R[i] = radial_equation(nl[0], nl[1], x[i]*BOHR_RADIUS)
     ax = plt.subplot(3, 2, index+1)
-    ax.plot(x, R)
+    ax.plot(x, R/1e16*4)
 
     plt.title(f"Radial wavefunction L({nl[0]},{nl[1]})")
     plt.tight_layout()
@@ -39,12 +39,12 @@ for index, nl in enumerate(nl_vals):
     for i in range(len(x)):
         R[i] = radial_equation(nl[0], nl[1], x[i]*BOHR_RADIUS)
     ax = plt.subplot(3, 2, index+1)
-    ax.plot(x, 4*np.pi*x**2*R**2)
+    ax.plot(x, 4*np.pi*x**2*R**2/1e32)
 
     plt.title(f"Probability density L({nl[0]},{nl[1]})")
     plt.tight_layout()
     plt.grid(True)
     plt.xlabel("r/a₀")
-    plt.ylabel("4πr$^2$R(r)$^2$")
+    plt.ylabel("P")
 plt.show()
 
