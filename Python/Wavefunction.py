@@ -28,10 +28,10 @@ def cartesian_to_spherical(x, y, z):
     
     return r, theta, phi
 
-def plot_probability_density_3d(n, l, m, radius=50):
+def plot_probability_density_3d(n, l, m, radius=50, resolution=50):
 
     max_radius = radius # r/a_0
-    resolution = 100
+    resolution = resolution
     x = y = z = np.linspace(-max_radius, max_radius, resolution)
 
     coords = []
@@ -52,10 +52,13 @@ def plot_probability_density_3d(n, l, m, radius=50):
     x_coords = [float(i.item()[1:]) for i in coord_matrix[:,0]] 
     y_coords = [float(i.item()) for i in coord_matrix[:,1]] 
     z_coords = [float(i.item()[0:-1]) for i in coord_matrix[:,2]]
+    distance = np.empty(len(x_coords))
+    for i in range(len(distance)):
+        distance[i] = np.sqrt(x_coords[i]**2+y_coords[i]**2+z_coords[i]**2)
 
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
-    ax.scatter(x_coords, y_coords, z_coords, alpha=0.05, s=2)
+    ax.scatter(x_coords, y_coords, z_coords, alpha=0.05, s=2, c=distance, cmap='rainbow')
     ax.set_title(f"Hydrogen probability density (n={n}, l={l}, m={m})")
 
     ax.set_xticks([-radius,-radius/2, 0,radius/2,radius])
@@ -85,5 +88,5 @@ def plot_wavefunction_2d(n, l, m):
     plt.imshow(np.sqrt(probability_density))
     plt.show()
 
-plot_wavefunction_2d(4, 1, 1)
-#plot_probability_density_3d(5, 3, 0, 50)
+#plot_wavefunction_2d(4, 1, 1)
+plot_probability_density_3d(3, 1, 0, 24, 100)
